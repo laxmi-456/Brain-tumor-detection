@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Detecting Tumor</title>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <style></style>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}"
+        />
+    </head>
+    <body>
+        <div class="wrapper">
+            <h1 class="text-center">Brain Tumor Detection</h1>
+            <div style="margin-top: 10%">
+                <form
+                    class="text-center"
+                    action="/predict"
+                    method="post"
+                    enctype="multipart/form-data"
+                >
+                    <label class="custom-file-upload">
+                        Upload image
+                        <input
+                            id="chooseimg"
+                            class="text-center"
+                            type="file"
+                            name="imagefile"
+                            class="form-control choose-btn"
+                        />
+                    </label>
+                    <p id="fileNameDisplay"></p>
+                    <p>{{imageloc}}</p>
+                    <input
+                        id="detecttum"
+                        type="submit"
+                        class="btn mt-3"
+                        value="Detect Tumor"
+                        style="
+                            color: white;
+                            background-color: #4169e1;
+                            border-radius: 0.25rem;
+                        "
+                        disabled
+                    />
+                </form>
+            </div>
+            <br />
+            {% if prediction %} {% if prediction == "yes" %}
+            <h3 class="predict">
+                This MRI indicates <span class="positive">presence</span> of
+                brain tumor
+            </h3>
+            {% else %}
+            <h3 class="predict">
+                This is a <span class="negative">healthy</span> brain
+            </h3>
+            {% endif %} {% endif %}
+            <br />
+            {% if imageloc %}
+            <center>
+                <img
+                    id="tumorimg"
+                    src="static/{{imageloc}}"
+                    width="220"
+                    height="230"
+                    style="border: 5px solid white"
+                />
+            </center>
+            {% endif %}
+        </div>
+    </body>
+
+    <script>
+        $("#chooseimg").on("click", function () {
+            $("#predtext").hide();
+            $("#tumorimg").hide();
+        });
+        $("#detecttum").on("click", function () {
+            $(window).load(function () {
+                $("#predtext").show();
+                $("#tumorimg").show();
+            });
+        });
+    </script>
+    <script>
+        document
+            .getElementById("chooseimg")
+            .addEventListener("change", function (e) {
+                let fileName = e.target.value;
+                document.getElementById("fileNameDisplay").innerHTML =
+                    "Selected file: " + fileName.substring(12);
+                document
+                    .getElementById("detecttum")
+                    .removeAttribute("disabled");
+            });
+    </script>
+</html>
